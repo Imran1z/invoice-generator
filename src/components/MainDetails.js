@@ -4,8 +4,8 @@ export const MainDetails = ({formData}) => {
   return (
 
       <section className="flex flex-col items-end justify-end">
-        <h1 className="text-2xl" >{formData.name}</h1>
-        <p>{formData.address}</p>
+        <h1 className="text-2xl uppercase font-bold text-cyan-500" >{formData.name}</h1>
+        <p className='text-start'>{formData.address}</p>
           
       </section>
 
