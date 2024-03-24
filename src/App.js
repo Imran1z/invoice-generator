@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import {  useEffect, useState,useRef} from "react";
 import { ClientDetails } from "./components/ClientDetails.js";
 import { Dates } from "./components/Dates.js";
 import { Footer } from "./components/Footer.js";
@@ -7,6 +7,7 @@ import { MainDetails } from "./components/MainDetails.js";
 import { Notes } from "./components/Notes.js";
 import { Table } from "./components/Table.js";
 import { TableForm } from "./components/TableForm.js";
+import ReactToPRint from 'react-to-print'
 
 function App() {
 
@@ -14,7 +15,8 @@ function App() {
   const [formData, setformData] = useState({})
   const [TableData, setTableData] = useState({});
   const [ProductList, setProductList] = useState([]);
-  const [totalAmount, settotalAmount] = useState(0)
+  const [totalAmount, settotalAmount] = useState(0);
+  const componentRef= useRef()
   
 
   useEffect(()=>{
@@ -41,12 +43,18 @@ function App() {
 
   
   return (
+
     <>
     <Header handlePrint={handlePrint} showInvoice={showInvoice}/>
       <main className="m-5 p-5 lg:max-w-4xl lg:mx-auto bg-white rounded shadow">
+      
       {
         showInvoice? 
-      <div>
+        <>
+        <ReactToPRint trigger={()=><button className="cursor-pointer py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-green-600 hover:bg-green-500">Print/Download</button>}
+        content={()=>componentRef.current}
+      />
+      <div ref={componentRef} className="p-5">
       <MainDetails formData={formData}/>
       <ClientDetails formData={formData}/>
       <Dates formData={formData}/> 
@@ -70,10 +78,14 @@ function App() {
 
       <Notes formData={formData}/>
       <Footer formData={formData}/>
+      </div>
       <button onClick={() => setshowInvoice(!showInvoice)} className="bg-blue-500 mt-5 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
        Edit Information
     </button>
-      </div>:(
+      
+      </>
+      :(
+        <>
        <div className="flex flex-col justify-center ">
        {/* name,address,email,phone,bank,account,website,clientname,clientadress,invoice number,invoice date,due date,notes */}
     
@@ -330,15 +342,17 @@ function App() {
     </div>
 
    
-<button type="submit"
-  onClick={(e) => { 
-    setshowInvoice(!showInvoice);
-    submitHandler(e) // Toggle the showInvoice state
-  }} 
-  className="bg-blue-500 mt-5 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
-  Preview Invoice
-</button>
        </div>
+      <button type="submit"
+        onClick={(e) => { 
+          setshowInvoice(!showInvoice);
+          submitHandler(e) // Toggle the showInvoice state
+        }} 
+        className="bg-blue-500 mt-5 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
+        Preview Invoice
+      </button>
+      </>
+
       )
       }
 
