@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import {v4 as uuidv4} from 'uuid'
 
 export const TableForm = ({ setTableData, TableData ,setProductList,ProductList}) => {
+    const [isEditing, setisEditing] = useState(false)
     const onChangeHandler = (e) => {
         const { id, value } = e.target;
         let updatedData = { ...TableData, [id]: value };
@@ -30,8 +31,8 @@ export const TableForm = ({ setTableData, TableData ,setProductList,ProductList}
 
         }
         setTableData({})
-   
-            setProductList([...ProductList, newItem]);
+        setProductList([...ProductList, newItem]);
+        setisEditing(false)
           
     }
 
@@ -41,6 +42,16 @@ export const TableForm = ({ setTableData, TableData ,setProductList,ProductList}
     }
 
     const onEditClick=(id)=>{
+        const editingRow=ProductList.find((product)=>product.id===id);
+        setProductList(ProductList.filter((product)=>product.id !==id))
+        setisEditing(true);
+        setTableData({
+            id:editingRow.id,
+            product:editingRow.product,
+            quantity:editingRow.quantity,
+            price:editingRow.price,
+            amount:editingRow.amount
+        })
         
     }
     
@@ -110,7 +121,7 @@ export const TableForm = ({ setTableData, TableData ,setProductList,ProductList}
 
       </article>
       </div>
-      <button className="bg-blue-500 mt-10 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded" type="submit">Add Item</button>
+      <button className="bg-blue-500 mt-10 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded" type="submit">{isEditing?'Edit Item':'Add Item'}</button>
      </form>
      <ul className="mt-5">
   {ProductList && ProductList.map((product) => (

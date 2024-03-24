@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import { ClientDetails } from "./components/ClientDetails.js";
 import { Dates } from "./components/Dates.js";
 import { Footer } from "./components/Footer.js";
@@ -13,7 +13,16 @@ function App() {
   const [showInvoice, setshowInvoice] = useState(false);
   const [formData, setformData] = useState({})
   const [TableData, setTableData] = useState({});
-  const [ProductList, setProductList] = useState([])
+  const [ProductList, setProductList] = useState([]);
+  const [totalAmount, settotalAmount] = useState(0)
+  
+
+  useEffect(()=>{
+    settotalAmount(ProductList.reduce((total, product) => {
+      return total + parseFloat(product.amount);
+    }, 0).toFixed(2) )
+  },[ProductList]);
+  //console.log("Total Amount",totalAmount)
     const handlePrint=()=>{
         window.print()
       }
@@ -26,8 +35,8 @@ function App() {
   
   const submitHandler=(e)=>{
     e.preventDefault(); // Prevent default form submission
-    console.log(formData);
-    console.log(TableData)
+    // console.log(formData);
+    // console.log(TableData)
    }
 
   
@@ -42,6 +51,23 @@ function App() {
       <ClientDetails formData={formData}/>
       <Dates formData={formData}/> 
       <Table TableData={TableData} ProductList={ProductList}/>
+      <div className="flex  justify-end mt-5 items-baseline gap-1">
+          <div>
+          <div className="flex items-baseline justify-end gap-2">
+            <h1 className="font-semibold text-xl">Sub-total:-</h1>
+            <p className="text-xl">₹ {totalAmount}</p>
+          </div>
+          <div className="flex items-baseline justify-end gap-2">
+            <h1 className="font-semibold text-xl">CGST:-</h1>
+            <p className="text-xl">₹ {(totalAmount * 0.14).toFixed(2)}</p>
+          </div>
+          <div className="flex items-baseline justify-end gap-2">
+            <h1 className="font-semibold text-xl">Total:-</h1>
+            <p className="text-xl">₹ {(parseFloat(totalAmount) + (parseFloat(totalAmount) * 0.14)).toFixed(2)}</p>
+          </div>
+          </div>
+        </div>
+
       <Notes formData={formData}/>
       <Footer formData={formData}/>
       <button onClick={() => setshowInvoice(!showInvoice)} className="bg-blue-500 mt-5 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
@@ -309,7 +335,7 @@ function App() {
     setshowInvoice(!showInvoice);
     submitHandler(e) // Toggle the showInvoice state
   }} 
-  className="bg-blue-500 mt-10 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
+  className="bg-blue-500 mt-5 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
   Preview Invoice
 </button>
        </div>
