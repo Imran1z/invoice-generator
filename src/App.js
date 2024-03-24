@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { ClientDetails } from "./components/ClientDetails.js";
 import { Dates } from "./components/Dates.js";
 import { Footer } from "./components/Footer.js";
@@ -6,11 +6,14 @@ import Header from "./components/Header.js";
 import { MainDetails } from "./components/MainDetails.js";
 import { Notes } from "./components/Notes.js";
 import { Table } from "./components/Table.js";
+import { TableForm } from "./components/TableForm.js";
 
 function App() {
 
   const [showInvoice, setshowInvoice] = useState(false);
   const [formData, setformData] = useState({})
+  const [TableData, setTableData] = useState({});
+  const [ProductList, setProductList] = useState([])
     const handlePrint=()=>{
         window.print()
       }
@@ -24,20 +27,21 @@ function App() {
   const submitHandler=(e)=>{
     e.preventDefault(); // Prevent default form submission
     console.log(formData);
+    console.log(TableData)
    }
 
   
   return (
     <>
     <Header handlePrint={handlePrint} showInvoice={showInvoice}/>
-      <main className="m-5 p-5 lg:max-w-5xl lg:mx-auto bg-white rounded shadow">
+      <main className="m-5 p-5 lg:max-w-4xl lg:mx-auto bg-white rounded shadow">
       {
         showInvoice? 
       <div>
       <MainDetails formData={formData}/>
       <ClientDetails formData={formData}/>
       <Dates formData={formData}/> 
-      <Table/>
+      <Table TableData={TableData} ProductList={ProductList}/>
       <Notes formData={formData}/>
       <Footer formData={formData}/>
       <button onClick={() => setshowInvoice(!showInvoice)} className="bg-blue-500 mt-5 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
@@ -48,7 +52,6 @@ function App() {
        {/* name,address,email,phone,bank,account,website,clientname,clientadress,invoice number,invoice date,due date,notes */}
     
 
-       <form className="max-w-xl mx-auto mt-8" onSubmit={(e)=>submitHandler(e)}>
   <article className="grid grid-cols-2 gap-6">
     <div className="flex flex-col">
       <label htmlFor="name" className="text-sm font-semibold">Your company name</label>
@@ -233,7 +236,7 @@ function App() {
     </div>
   </article>
 
-  <article className="grid grid-cols-3 gap-6 mt-6">
+  <article className="grid grid-cols-3 gap-6 mt-6 mb-20">
     <div className="flex flex-col">
       <label htmlFor="invoiceNumber" className="text-sm font-semibold">Invoice Number</label>
       <input
@@ -280,6 +283,10 @@ function App() {
     </div>
   </article>
 
+  {/* table form */}
+    <TableForm  setTableData={setTableData} TableData={TableData} setProductList={setProductList} ProductList={ProductList} />
+ 
+
   <div className="flex flex-col mt-20">
       <label htmlFor="notes" className="text-sm font-semibold">Additional Notes</label>
       <textarea
@@ -295,12 +302,12 @@ function App() {
         onChange={(e)=>onChangeHandler(e)}
       />
     </div>
-</form>
 
    
 <button type="submit"
   onClick={(e) => { 
-    setshowInvoice(!showInvoice); // Toggle the showInvoice state
+    setshowInvoice(!showInvoice);
+    submitHandler(e) // Toggle the showInvoice state
   }} 
   className="bg-blue-500 mt-10 text-white border-2 border-blue-500 px-3 py-2 hover:bg-transparent duration-300 md:text-xl hover:text-blue-500 transition-all rounded">
   Preview Invoice
